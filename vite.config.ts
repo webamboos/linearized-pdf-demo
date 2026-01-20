@@ -13,14 +13,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  server: {
-    proxy: {
-      '/pdf': {
-        changeOrigin: true,
-        followRedirects: true,
-        target: 'https://github.com/mozilla/pdf.js/files/15398373/2.pdf',
-        rewrite: () => '',
-      },
-    },
-  },
 })

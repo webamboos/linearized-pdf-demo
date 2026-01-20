@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import PdfViewer from './components/pdf-viewer.vue'
 
-const currentUrl = ref('/pdf')
+const currentUrl = ref('/pdfs/example-1.pdf')
 
-const urlInput = ref('/pdf')
+const urlInput = ref('/pdfs/example-1.pdf')
 const pageCount = ref(7)
 
 function loadPdf() {
