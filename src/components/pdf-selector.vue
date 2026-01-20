@@ -5,7 +5,7 @@ const emit = defineEmits<{
   load: [url: string, pageCount: number]
 }>()
 
-const basePath = import.meta.env.BASE_URL
+const basePath = import.meta.env.VITE_BASE_PATH
 
 const pdfs = [
   { url: `${basePath}pdfs/example-1.pdf`, pageCount: 7, label: 'Example 1 (7 pages)' },
