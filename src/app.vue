@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import PdfViewer from './components/pdf-viewer.vue'
 import PdfSelector from './components/pdf-selector.vue'
 
-const currentUrl = ref('/pdfs/example-1.pdf')
+const currentUrl = ref(`${import.meta.env.VITE_BASE_PATH}pdfs/example-1.pdf`)
 const pageCount = ref(7)
 
 function onLoad(url: string, pages: number) {
