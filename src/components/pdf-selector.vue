@@ -5,9 +5,11 @@ const emit = defineEmits<{
   load: [url: string, pageCount: number]
 }>()
 
+const basePath = import.meta.env.BASE_URL
+
 const pdfs = [
-  { url: 'pdfs/example-1.pdf', pageCount: 7, label: 'Example 1 (7 pages)' },
-  { url: 'pdfs/example-2.pdf', pageCount: 230, label: 'Example 2 (230 pages)' },
+  { url: `${basePath}pdfs/example-1.pdf`, pageCount: 7, label: 'Example 1 (7 pages)' },
+  { url: `${basePath}pdfs/example-2.pdf`, pageCount: 230, label: 'Example 2 (230 pages)' },
 ]
 
 const selectedIndex = ref(0)

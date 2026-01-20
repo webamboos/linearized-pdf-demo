@@ -7,7 +7,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS ? '/linearized-pdf-demo/' : '/',
+  base: process.env.BASE_PATH || '/',
   plugins: [vue(), vueDevTools(), tailwindcss()],
   resolve: {
     alias: {
