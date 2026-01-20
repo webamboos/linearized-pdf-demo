@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { BASE_URL } from '@/constants'
 
 const emit = defineEmits<{
   load: [url: string, pageCount: number]
 }>()
 
-const basePath = import.meta.env.VITE_BASE_PATH
-
 const pdfs = [
-  { url: `${basePath}pdfs/example-1.pdf`, pageCount: 7, label: 'Example 1 (7 pages)' },
-  { url: `${basePath}pdfs/example-2.pdf`, pageCount: 230, label: 'Example 2 (230 pages)' },
+  { url: `${BASE_URL}pdfs/example-1.pdf`, pageCount: 7, label: 'Example 1 (7 pages)' },
+  { url: `${BASE_URL}pdfs/example-2.pdf`, pageCount: 230, label: 'Example 2 (230 pages)' },
 ]
 
 const selectedIndex = ref(0)
