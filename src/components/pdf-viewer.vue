@@ -6,6 +6,7 @@ import PdfPage from './pdf-page.vue'
 import { SCALE, ESTIMATED_PAGE_WIDTH, ESTIMATED_PAGE_HEIGHT } from '@/lib/pdf-constants'
 import { PdfRangeTransport } from '@/lib/pdf-range-transport'
 import { providePdfContext } from '@/composables/use-pdf-context'
+import { isPdfLinearized } from '@/lib/check-linearized'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -21,6 +22,7 @@ const pdf = shallowRef<PDFDocumentProxy | null>(null)
 const pagesLoaded = ref(0)
 const status = ref<'loading' | 'ready' | 'error'>('loading')
 const errorMessage = ref('')
+const loadingMethod = ref<'incremental' | 'full'>('incremental')
 
 // Provide pdf context to child components
 providePdfContext({ pdf, scale: SCALE })
@@ -31,22 +33,39 @@ function onPageRendered() {
 
 onMounted(async () => {
   try {
-    const headResponse = await fetch(props.url, { method: 'HEAD' })
-    const contentLength = headResponse.headers.get('Content-Length')
-    if (!contentLength) {
-      throw new Error('Server did not return Content-Length header')
+    // Check if the PDF is linearized (optimized for incremental loading)
+    const isLinearized = await isPdfLinearized(props.url)
+
+    if (isLinearized) {
+      // Use incremental loading for linearized PDFs
+      console.log('PDF is linearized, using incremental loading')
+      loadingMethod.value = 'incremental'
+
+      const headResponse = await fetch(props.url, { method: 'HEAD' })
+      const contentLength = headResponse.headers.get('Content-Length')
+      if (!contentLength) {
+        throw new Error('Server did not return Content-Length header')
+      }
+      const length = parseInt(contentLength, 10)
+
+      const transport = new PdfRangeTransport(length, props.url)
+
+      const loadingTask = pdfjsLib.getDocument({
+        range: transport,
+        disableAutoFetch: true,
+        disableStream: true,
+      })
+
+      pdf.value = await loadingTask.promise
+    } else {
+      // Use full file loading for non-linearized PDFs
+      console.log('PDF is not linearized, loading full file')
+      loadingMethod.value = 'full'
+
+      const loadingTask = pdfjsLib.getDocument(props.url)
+      pdf.value = await loadingTask.promise
     }
-    const length = parseInt(contentLength, 10)
 
-    const transport = new PdfRangeTransport(length, props.url)
-
-    const loadingTask = pdfjsLib.getDocument({
-      range: transport,
-      disableAutoFetch: true,
-      disableStream: true,
-    })
-
-    pdf.value = await loadingTask.promise
     status.value = 'ready'
   } catch (error) {
     status.value = 'error'
@@ -65,7 +84,12 @@ onUnmounted(() => {
     <div class="mb-3 text-sm">
       <span v-if="status === 'loading'" class="text-gray-500"> Loading PDF... </span>
       <span v-else-if="status === 'error'" class="text-red-600">{{ errorMessage }}</span>
-      <span v-else class="text-blue-500">Pages rendered: {{ pagesLoaded }} / {{ pageCount }}</span>
+      <span v-else class="text-blue-500">
+        Pages rendered: {{ pagesLoaded }} / {{ pageCount }}
+        <span class="ml-2 text-gray-500">
+          ({{ loadingMethod === 'incremental' ? 'incremental loading' : 'full file loading' }})
+        </span>
+      </span>
     </div>
     <div class="flex flex-col gap-5 items-center">
       <PdfPage
