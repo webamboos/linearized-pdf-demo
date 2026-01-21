@@ -7,7 +7,7 @@ defineProps<{
 
 <template>
   <div
-    class="shadow-lg bg-white overflow-hidden"
+    class="shadow-lg bg-white overflow-hidden max-w-full"
     :style="{ width: `${width}px`, height: `${height}px` }"
   >
     <div class="p-8 h-full animate-pulse">

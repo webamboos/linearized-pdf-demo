@@ -31,7 +31,7 @@ async function renderPage() {
 
   try {
     const page = await pdf.value.getPage(props.pageNumber)
-    const viewport = page.getViewport({ scale })
+    const viewport = page.getViewport({ scale: scale.value })
 
     const canvas = canvasRef.value
     if (!canvas) return
@@ -63,7 +63,7 @@ watch(
       renderPage()
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 onMounted(() => {
@@ -82,7 +82,7 @@ onMounted(() => {
       root: null,
       rootMargin: '1000px',
       threshold: 0,
-    }
+    },
   )
 
   observer.observe(containerRef.value)
@@ -96,10 +96,6 @@ onUnmounted(() => {
 <template>
   <div ref="containerRef">
     <PdfPagePlaceholder v-if="!isRendered" :width="width" :height="height" />
-    <canvas
-      ref="canvasRef"
-      v-show="isRendered"
-      class="shadow-lg bg-white"
-    />
+    <canvas ref="canvasRef" v-show="isRendered" class="shadow-lg bg-white max-w-full h-auto" />
   </div>
 </template>

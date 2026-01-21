@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, shallowRef, onMounted, onUnmounted } from 'vue'
+import { ref, shallowRef, onMounted, onUnmounted, computed } from 'vue'
 import * as pdfjsLib from 'pdfjs-dist'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import PdfPage from './pdf-page.vue'
-import { SCALE, ESTIMATED_PAGE_WIDTH, ESTIMATED_PAGE_HEIGHT } from '@/lib/pdf-constants'
 import { PdfRangeTransport } from '@/lib/pdf-range-transport'
 import { providePdfContext } from '@/composables/use-pdf-context'
 import { isPdfLinearized } from '@/lib/check-linearized'
+import { useResponsivePdf } from '@/composables/use-responsive-pdf'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -24,8 +24,11 @@ const status = ref<'loading' | 'ready' | 'error'>('loading')
 const errorMessage = ref('')
 const loadingMethod = ref<'incremental' | 'full'>('incremental')
 
+// Use responsive PDF dimensions
+const { scale, estimatedPageWidth, estimatedPageHeight } = useResponsivePdf()
+
 // Provide pdf context to child components
-providePdfContext({ pdf, scale: SCALE })
+providePdfContext({ pdf, scale })
 
 function onPageRendered() {
   pagesLoaded.value++
@@ -96,8 +99,8 @@ onUnmounted(() => {
         v-for="pageNum in pageCount"
         :key="pageNum"
         :page-number="pageNum"
-        :width="ESTIMATED_PAGE_WIDTH"
-        :height="ESTIMATED_PAGE_HEIGHT"
+        :width="estimatedPageWidth()"
+        :height="estimatedPageHeight()"
         @rendered="onPageRendered"
       />
     </div>

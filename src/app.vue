@@ -14,9 +14,9 @@ function onLoad(url: string, pages: number) {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto p-5 font-sans">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 font-sans">
     <header class="mb-5">
-      <h1 class="text-2xl font-medium m-0">PDF.js Lazy Loading Demo</h1>
+      <h1 class="text-xl sm:text-2xl font-medium m-0">PDF.js Lazy Loading Demo</h1>
     </header>
 
     <PdfSelector @load="onLoad" />
