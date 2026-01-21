@@ -12,7 +12,11 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -24,12 +28,17 @@
     "@tsconfig/node24": "^24.0.3",
     "@types/node": "^24.10.4",
     "@vitejs/plugin-vue": "^6.0.3",
+    "@vitest/coverage-v8": "^4.0.17",
+    "@vitest/ui": "^4.0.17",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
+    "jsdom": "^27.4.0",
     "npm-run-all2": "^8.0.4",
     "prettier": "3.7.4",
     "typescript": "~5.9.3",
     "vite": "beta",
     "vite-plugin-vue-devtools": "^8.0.5",
+    "vitest": "^4.0.17",
     "vue-tsc": "^3.2.2"
   }
 }
